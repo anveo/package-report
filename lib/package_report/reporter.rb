@@ -1,4 +1,4 @@
-module PackageInfo
+module PackageReport
   class Reporter
     def report
     end

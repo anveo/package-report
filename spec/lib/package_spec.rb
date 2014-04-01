@@ -53,7 +53,7 @@ describe "Package" do
     )
   end
 
-  let(:package) { PackageInfo::Package.new("sudo", "1.8.3p1-1ubuntu3.6")}
+  let(:package) { PackageReport::Package.new("sudo", "1.8.3p1-1ubuntu3.6")}
 
   describe "#new" do
   end

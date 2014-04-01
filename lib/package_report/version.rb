@@ -1,4 +1,4 @@
-module PackageInfo
+module PackageReport
   VERSION = "0.0.1"
 end
 

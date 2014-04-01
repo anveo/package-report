@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe "Reporter" do
-  let(:reporter) { PackageInfo::Reporter.new }
+  let(:reporter) { PackageReport::Reporter.new }
 
   before(:each) do
     reporter.stub(:raw_apt_upgrade_text).and_return(<<-EOS.strip_heredoc

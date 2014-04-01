@@ -1,4 +1,4 @@
-module PackageInfo
+module PackageReport
   class Package
     attr_accessor :name, :installed_version, :latest_version, :changelog
 
