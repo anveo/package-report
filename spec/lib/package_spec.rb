@@ -80,4 +80,11 @@ describe "Package" do
       expect(package.current_version).to eq("1.8.3p1-1ubuntu3.3")
     end
   end
+
+  describe ".newer_changes" do
+    it "only returns parts of the changelog that contain newer versions" do
+      package.current_version = "1.8.3p1-1ubuntu3.3"
+      expect(package.newer_changes.count).to be(2)
+    end
+  end
 end

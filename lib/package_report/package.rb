@@ -26,9 +26,20 @@ module PackageReport
     end
 
     def newer_changes
+      found = false
       newer = []
+
       changelog_parts.each do |part|
+        if part.match(@current_version)
+          found = true
+        end
+        next if found
+
+        newer << part
       end
+
+      newer.delete_at(0)
+      newer
     end
 
     def changelog_parts

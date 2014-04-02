@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Instance Packages Report</title>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono|Ubuntu:400,700' rel='stylesheet' type='text/css'>
+  <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    body {
+      font-family: 'Ubuntu', sans-serif;
+    }
+    h2 {
+      margin-bottom: 5px;
+      border-bottom: 5px solid #f8f8f8;
+    }
+    pre {
+      font-family: 'Ubuntu Mono', ;
+    }
+
+    strong.underline {
+      display: block;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .changelog-expand {
+      cursor: pointer;
+    }
+    .urgency-low {
+    }
+    .urgency-medium {
+      color: #e8ca71;
+    }
+    .urgency-high, .urgency-emergency, .urgency-critical {
+      color: #c63617;
+    }
+  </style>
+</head>
+<body>
+  <% instances.each do |instance_id, packages| %>
+      <h2><%= instance_id.sub(".json", "") %></h2>
+      <% packages.each do |pkg_name, pkg_info| %>
+        <div>
+          <strong class="underline">
+          <% unless pkg_info["changelog"].empty? %>
+ <i class="fa fa-plus-circle changelog-expand urgency-<%= pkg_info["changelog"].join.match(/urgency=(\w+)/)[1] %>"></i> 
+          <% end %>
+          <%= pkg_name %>
+          </strong>
+          <pre style="display: none;"><%= pkg_info["changelog"].join.gsub("\n", "<br>") %></pre>
+        </div>
+      <% end %>
+  <% end %>
+  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script>
+    $(function() {
+      $(".changelog-expand").click(function(e) {
+        var self = $(this);
+        self.parent().parent().find("pre").toggle();
+      });
+    });
+  </script>
+</body>
+</html>
