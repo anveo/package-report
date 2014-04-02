@@ -1,18 +1,34 @@
 module PackageReport
   class Package
-    attr_accessor :name, :installed_version, :latest_version, :changelog
+    attr_accessor :name, :current_version, :latest_version, :changelog
 
-    def initialize(package_name, upstream_version)
+    def initialize(package_name = nil, current_version = nil, latest_version = nil)
       @name = package_name
-      @latest_version = upstream_version
+      @current_version = current_version
+      @latest_version = latest_version
 
       # get installed version
       # get latest version
       # get changelog
     end
 
-    def installed_version
-      raw_intalled_version.split[1]
+    def self.from_apt_line(line)
+      parts = line.split
+      name = parts[1]
+      current_version = parts[2].gsub(/\[|\]/, "")
+      latest_version = parts[3].gsub(/\(/, "")
+
+      self.new name, current_version, latest_version
+    end
+
+    def fetch_version!
+      @current_version = raw_installed_version.split[1]
+    end
+
+    def newer_changes
+      newer = []
+      changelog_parts.each do |part|
+      end
     end
 
     def changelog_parts
@@ -29,12 +45,12 @@ module PackageReport
 
     private
 
-    def raw_intalled_version
-      `\dpkg -s #{package_name} | \grep '^Version'`
+    def raw_installed_version
+      `\dpkg -s #{@name} | \grep '^Version'`
     end
 
     def raw_changelog
-      `\aptitude changelog #{package_name}`
+      `aptitude changelog #{@name}`
     end
   end
 end

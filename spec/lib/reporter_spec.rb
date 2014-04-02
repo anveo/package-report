@@ -29,7 +29,7 @@ describe "Reporter" do
 
   describe ".package_upgrades_available" do
     it "extracts package information" do
-      expect(reporter.package_upgrades_available).to include("libudev0")
+      expect(reporter.package_upgrades_available.map(&:name)).to include("libudev0")
     end
   end
 end

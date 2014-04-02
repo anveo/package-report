@@ -1,8 +1,10 @@
 require "spec_helper"
 
 describe "Package" do
+  let(:package) { PackageReport::Package.new }
+
   before(:each) do
-    package.stub(:raw_intalled_version).and_return("Version: 1.8.3p1-1ubuntu3.3")
+    package.stub(:raw_installed_version).and_return("Version: 1.8.3p1-1ubuntu3.3")
     package.stub(:raw_changelog).and_return(<<-EOS.strip_heredoc
       sudo (1.8.3p1-1ubuntu3.6) precise-security; urgency=medium
 
@@ -53,9 +55,16 @@ describe "Package" do
     )
   end
 
-  let(:package) { PackageReport::Package.new("sudo", "1.8.3p1-1ubuntu3.6")}
-
   describe "#new" do
+  end
+
+  describe "#from_apt_line" do
+    it "extracts package information" do
+      package = PackageReport::Package.from_apt_line("Inst libudev0 [175-0ubuntu9.4] (175-0ubuntu9.5 Ubuntu:12.04/precise-updates [amd64])")
+      expect(package.name).to eq("libudev0")
+      expect(package.current_version).to eq("175-0ubuntu9.4")
+      expect(package.latest_version).to eq("175-0ubuntu9.5")
+    end
   end
 
   describe ".changelog_parts" do
@@ -64,9 +73,11 @@ describe "Package" do
     end
   end
 
-  describe ".installed_version" do
+  describe ".fetch_version!" do
     it "parses the correct version" do
-      expect(package.installed_version).to eq("1.8.3p1-1ubuntu3.3")
+      package.current_version = nil
+      package.fetch_version!
+      expect(package.current_version).to eq("1.8.3p1-1ubuntu3.3")
     end
   end
 end
