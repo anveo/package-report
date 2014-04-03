@@ -16,16 +16,16 @@ module PackageReport
 
       json = packages_info.to_json
 
-      #connection = Fog::Storage.new({
-        #:provider                 => "AWS",
-        #:aws_access_key_id        => ENV["AWS_ACCESS_KEY_ID"],
-        #:aws_secret_access_key    => ENV["AWS_SECRET_ACCESS_KEY"]
-      #})
       connection = Fog::Storage.new({
-        provider: "Local",
-        local_root: "/vagrant/fog",
-        endpoint: "http://example.com"
+        :provider                 => "AWS",
+        :aws_access_key_id        => ENV["AWS_ACCESS_KEY_ID"],
+        :aws_secret_access_key    => ENV["AWS_SECRET_ACCESS_KEY"]
       })
+      #connection = Fog::Storage.new({
+        #provider: "Local",
+        #local_root: "/vagrant/fog",
+        #endpoint: "http://example.com"
+      #})
 
       dir = connection.directories.create({
         key: "#{ENV["AWS_S3_BUCKET"]}/#{Time.now.strftime("%Y-%m-%d")}"
@@ -40,10 +40,15 @@ module PackageReport
       # connect to s3
       # each json file
       #   render template or something
+      #connection = Fog::Storage.new({
+        #provider: "Local",
+        #local_root: "/vagrant/fog",
+        #endpoint: "http://example.com"
+      #})
       connection = Fog::Storage.new({
-        provider: "Local",
-        local_root: "/vagrant/fog",
-        endpoint: "http://example.com"
+        :provider                 => "AWS",
+        :aws_access_key_id        => ENV["AWS_ACCESS_KEY_ID"],
+        :aws_secret_access_key    => ENV["AWS_SECRET_ACCESS_KEY"]
       })
 
       dir = connection.directories.create({
