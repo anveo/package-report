@@ -19,7 +19,8 @@ module PackageReport
       connection = Fog::Storage.new({
         :provider                 => "AWS",
         :aws_access_key_id        => ENV["AWS_ACCESS_KEY_ID"],
-        :aws_secret_access_key    => ENV["AWS_SECRET_ACCESS_KEY"]
+        :aws_secret_access_key    => ENV["AWS_SECRET_ACCESS_KEY"],
+        :path_style => true
       })
       #connection = Fog::Storage.new({
         #provider: "Local",
@@ -28,11 +29,11 @@ module PackageReport
       #})
 
       dir = connection.directories.create({
-        key: "#{ENV["AWS_S3_BUCKET"]}/#{Time.now.strftime("%Y-%m-%d")}"
+        key: ENV["AWS_S3_BUCKET"]
       })
       dir.files.create(
-        key: `hostname`.strip + ".json",
-        body: json,
+        key: Time.now.strftime("%Y-%m-%d") + "/" + `hostname`.strip + ".json",
+        body: json
       )
     end
 
@@ -48,16 +49,21 @@ module PackageReport
       connection = Fog::Storage.new({
         :provider                 => "AWS",
         :aws_access_key_id        => ENV["AWS_ACCESS_KEY_ID"],
-        :aws_secret_access_key    => ENV["AWS_SECRET_ACCESS_KEY"]
+        :aws_secret_access_key    => ENV["AWS_SECRET_ACCESS_KEY"],
+        :path_style => true
       })
 
-      dir = connection.directories.create({
-        key: "#{ENV["AWS_S3_BUCKET"]}/#{Time.now.strftime("%Y-%m-%d")}"
-      })
+      #p connection.directories
+      dir = connection.directories.get(ENV["AWS_S3_BUCKET"])
+                                       #/#{Time.now.strftime("%Y-%m-%d")}")
+      #pp bucket
+      #p dir.files
+      #exit
 
       instances = {}
       dir.files.each do |file|
-        next if file.key == "index.html"
+        next unless file.key =~ /#{Time.now.strftime("%Y-%m-%d")}/
+        next unless file.key =~ /json$/
         instances[file.key] = JSON.parse file.body
       end
 
@@ -66,8 +72,9 @@ module PackageReport
       html = ERB.new(template_string).result(binding)
 
       dir.files.create(
-        key: "index.html",
-        body: html
+        key: "#{Time.now.strftime("%Y-%m-%d")}/index.html",
+        body: html,
+        public: true
       )
     end
 
