@@ -15,7 +15,6 @@ module PackageReport
       end
 
       json = packages_info.to_json
-      #puts json
 
       #connection = Fog::Storage.new({
         #:provider                 => "AWS",
@@ -29,7 +28,7 @@ module PackageReport
       })
 
       dir = connection.directories.create({
-        key: "crowdtilt-sysops/2013-04-02"
+        key: "#{ENV["AWS_S3_BUCKET"]}/#{Time.now.strftime("%Y-%m-%d")}"
       })
       dir.files.create(
         key: `hostname`.strip + ".json",
@@ -48,7 +47,7 @@ module PackageReport
       })
 
       dir = connection.directories.create({
-        key: "crowdtilt-sysops/2013-04-02"
+        key: "#{ENV["AWS_S3_BUCKET"]}/#{Time.now.strftime("%Y-%m-%d")}"
       })
 
       instances = {}
