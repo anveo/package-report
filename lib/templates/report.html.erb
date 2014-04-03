@@ -10,8 +10,9 @@
       font-family: 'Ubuntu', sans-serif;
     }
     h2 {
+      font-size: 32px;
       margin-bottom: 5px;
-      border-bottom: 5px solid #f8f8f8;
+      border-bottom: 1px dotted #e0e0e0;
     }
     pre {
       font-family: 'Ubuntu Mono', ;
@@ -19,13 +20,15 @@
 
     strong.underline {
       display: block;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid #f1f1f1;
     }
 
     .changelog-expand {
       cursor: pointer;
+      color: #cdcdcd;
     }
     .urgency-low {
+      color: #cecece;
     }
     .urgency-medium {
       color: #e8ca71;
@@ -33,18 +36,34 @@
     .urgency-high, .urgency-emergency, .urgency-critical {
       color: #c63617;
     }
+    .current-version {
+      float: right;
+      font-size: 12px;
+      color: #cecece;
+      padding-top: 3px;
+    }
+
+    #legend {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+    }
   </style>
 </head>
 <body>
+  <div id="legend">
+  <strong>legend:</strong>
+  <i class="fa fa-plus-circle urgency-low"></i> low priority <i class="fa fa-plus-circle urgency-medium"></i> medium priority <i class="fa fa-plus-circle urgency-high"></i> high priority
+  </div>
   <% instances.each do |instance_id, packages| %>
-      <h2><%= instance_id.sub(".json", "") %></h2>
+      <h2><%= instance_id.sub(".json", "").split(/\//).last %></h2>
       <% packages.each do |pkg_name, pkg_info| %>
         <div>
           <strong class="underline">
           <% unless pkg_info["changelog"].empty? %>
  <i class="fa fa-plus-circle changelog-expand urgency-<%= pkg_info["changelog"].join.match(/urgency=(\w+)/)[1] %>"></i> 
           <% end %>
-          <%= pkg_name %>
+          <%= pkg_name %> <span class="current-version"><%= pkg_info["current_version"] %> -> <%= pkg_info["latest_version"] %></span>
           </strong>
           <pre style="display: none;"><%= pkg_info["changelog"].join.gsub("\n", "<br>") %></pre>
         </div>
@@ -56,6 +75,8 @@
       $(".changelog-expand").click(function(e) {
         var self = $(this);
         self.parent().parent().find("pre").toggle();
+        self.toggleClass("fa-plus-circle");
+        self.toggleClass("fa-minus-circle");
       });
     });
   </script>
