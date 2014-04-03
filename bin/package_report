@@ -3,4 +3,11 @@
 require_relative "../lib/package_report"
 
 report = PackageReport::Reporter.new
-report.run!
+
+if ARGV.include? "upload"
+  report.run!
+end
+
+if ARGV.include? "aggregate"
+  report.build_website!
+end
